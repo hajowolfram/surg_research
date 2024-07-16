@@ -47,15 +47,15 @@ simulate_single_game <- function(team_name) {
     rate_prob = rexp(length(trans_prob), trans_prob)
     rate_prob[is.na(rate_prob)] = max(rate_prob[!is.na(rate_prob)]) + 1
     if (T + min(rate_prob) > 2880) {
+      LU_sim[state] = LU_sim[state] + (2880 - T)
       T = 2880
     } else {
-      print(min(rate_prob))
+      LU_sim[state] = LU_sim[state] + min(rate_prob)
       T = T + min(rate_prob)
     }
     print(min(rate_prob))
     stateN = which.min(rate_prob)
     if (stateN >= state) stateN = stateN + 1
-    LU_sim[state] = LU_sim[state] + min(rate_prob)
     state = stateN
   }
   
@@ -77,3 +77,7 @@ simulate_matchup <- function(team_a, team_b) {
 
 #Example: simulating matchup between Chicago and Golden State
 simulate_matchup("Chi", "GS")
+
+x <- simulate_single_game("Chi")
+
+sum(x)
