@@ -125,5 +125,23 @@ simulate_matchup <- function(team_a, team_b) {
   return(a_plus_minus - b_plus_minus)
 }
 
+#Function for simulating best of 7 series
+simulate_series <- function(team_a, team_b) {
+  a_wins = 0
+  b_wins = 0
+  while (a_wins < 4 && b_wins < 4) {
+    differential = simulate_matchup(team_a, team_b)
+    if (differential > 0) {
+      a_wins = a_wins + 1
+    } else if (differential < 0) {
+      b_wins = b_wins + 1
+    }
+    print(differential)
+  }
+}
+
 #Example: simulating matchup between Chicago and Golden State 
-simulate_matchup("Chi", "GS")
+simulate_matchup("Hou", "Por")
+
+#Example: simulating 7 game series between Indiana and Atlanta
+simulate_series("Ind", "Atl")
