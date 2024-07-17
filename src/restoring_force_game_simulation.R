@@ -32,15 +32,17 @@ simulate_matchup <- function(team_a, team_b) {
   
   # Sampling starting states based on empirical distributions (tLS s) 
   a_state = sample(1:length(a_tLS), 1, prob = a_tLS/sum(a_tLS))
-  b_state = sample(1:length(b_tLS), 1, prob = b_tLS/sum(a_tLS))
+  b_state = sample(1:length(b_tLS), 1, prob = b_tLS/sum(b_tLS))
   
   #Separate time indices much be kept to maintain substitution independence between teams
   a_T = 0
   b_T = 0
   game_duration = 60 * 48
   interval_start = 0 # beginning of the current time interval 
-  
-  while (a_T < game_duration || b_T < game_duration) {
+  iterator = 0
+  while (a_T < game_duration && b_T < game_duration) {
+    iterator = iterator + 1
+    print(iterator)
     if (a_T <= b_T) {
       #Advancing a_T
       interval_start = a_T
@@ -105,7 +107,7 @@ simulate_matchup <- function(team_a, team_b) {
     #Adjusting coefficients to account for linear restoring force
     a_adjusted_coef = team_lineup_coef[[team_a]][a_state]
     b_adjusted_coef = team_lineup_coef[[team_b]][b_state]
-    c = 0.01
+    c = 0
     score_differential = abs(a_plus_minus - b_plus_minus)
     if (a_plus_minus > b_plus_minus) {
       #a is winning
@@ -136,12 +138,10 @@ simulate_series <- function(team_a, team_b) {
     } else if (differential < 0) {
       b_wins = b_wins + 1
     }
-    print(differential)
+  }
+  if (a_wins > b_wins) {
+    return(team_a)
+  } else if (b_wins > a_wins){
+    return(team_b)
   }
 }
-
-#Example: simulating matchup between Chicago and Golden State 
-simulate_matchup("Hou", "Por")
-
-#Example: simulating 7 game series between Indiana and Atlanta
-simulate_series("Ind", "Atl")
